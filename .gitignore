@@ -5,3 +5,4 @@ SERVER_VERIFICATION.json
 .codex/
 *.log
 .DS_Store
+.omc/
