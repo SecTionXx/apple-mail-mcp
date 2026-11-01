@@ -6,7 +6,7 @@
 
 - Unit tests ผ่าน **31/31** (รวมชุดใหม่: pacing/MAIL_BUSY/cooldown, bulkRead, policy backoff/token-bucket, sync cursor/resume/history_expired, bulk job resume)
 - Live gate ผ่านทั้งสองชุด: bridge (16 tools, 3 บัญชี, ทดสอบครบ 2 บัญชี, `since` ทำงานตรง) และ Gmail API (inventory 8,044/8,044 ตรง `verified_message_inventory`, sync `up_to_date`, bulk fetch 3/3, bulk download 1, **Hotmail ผ่าน bridge อ่านได้จริง**)
-- ข้อสังเกตสภาพแวดล้อม: บัญชี `boworn.tr@gmail.com` สาขา IMAP ของ Mail กำลังล่าช้าอยู่ (INBOX อ่านไม่ได้ช่วงทดสอบ ทั้งโค้ดเก่าและใหม่) จึงถูกข้ามพร้อมรายงานใน gate — ไม่ใช่ผลจากรุ่นนี้
+- ข้อสังเกตสภาพแวดล้อม: บัญชี Gmail ส่วนตัวบัญชีหนึ่งใน Mail สาขา IMAP กำลังล่าช้าอยู่ (INBOX อ่านไม่ได้ช่วงทดสอบ ทั้งโค้ดเก่าและใหม่) จึงถูกข้ามพร้อมรายงานใน gate — ไม่ใช่ผลจากรุ่นนี้
 - **โหลดเทสบัญชี Hotmail/Exchange ผ่าน bridge (`test/exchange-load.mjs`)**: Inbox 2,360 ฉบับ — เดิน metadata 300 แถว (6 หน้า×50), อ่านเนื้อหา 30 ฉบับ (3 ชุด×10) ผ่าน `bulk_read_messages` ไม่มีที่ล้ม, ยิง 12 call พร้อมกันได้ 8 สำเร็จ + 4 โดน `MAIL_BUSY` (คิวทำงานตามขอบเขต) **ไม่มี timeout หรือค้างแม้แต่ครั้งเดียว** และ Mail ยังตอบสนองทันทีหลังโหลด (call ช้าสุด 15.6 วิ อยู่ในงบ 20 วิ)
 - MCP server ที่รันอยู่ในแชตเดิมยังเป็นโปรเซสโค้ดเก่า; เปิดเซสชันใหม่หรือ reconnect MCP จึงจะได้เครื่องมือ 16 ตัว
 
@@ -40,7 +40,7 @@
 ## ผลตรวจรุ่น 0.2.0
 
 - มี 12 tools: Apple Mail เดิม 7 ตัว และ Gmail server 5 ตัว
-- บัญชี `boworn.t@bgrimmgroup.com`: สแกน unique message ID ได้ **8,014 รายการ / 17 หน้า** รวม Spam และ Trash
+- บัญชีองค์กรที่เชื่อม API: สแกน unique message ID ได้ **8,014 รายการ / 17 หน้า** รวม Spam และ Trash
 - จำนวนตรงกับ `messagesTotal` ทั้งก่อนและหลังสแกน และ `historyId` ไม่เปลี่ยน: `verified_message_inventory`
 - เป็นหลักฐานว่ารายการ message ID ที่ Gmail API เปิดให้บัญชีนี้เห็นครบ ณ เวลาสแกน **ไม่ใช่การดาวน์โหลดเนื้อหา/ไฟล์แนบครบทุกฉบับ** และไม่รวมข้อมูลที่ลบถาวรหรือเก็บในระบบ retention ของผู้ดูแล
 - อ่านเนื้อหาจาก API จริง 3 ฉบับและตรวจสถานะ UNREAD ไม่เปลี่ยน ดาวน์โหลดไฟล์แนบจาก API จริง 1 ไฟล์พร้อมตรวจขนาดและ SHA-256
