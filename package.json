@@ -1,0 +1,19 @@
+{
+  "name": "apple-mail-readonly-local",
+  "version": "0.3.0",
+  "private": true,
+  "type": "module",
+  "description": "Read-only MCP server: Apple Mail via a paced JXA bridge plus Gmail API tools with resumable bulk sync/fetch",
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node --test test/*.test.mjs",
+    "test:live": "node test/live.mjs",
+    "test:server-live": "node test/server-live.mjs",
+    "test:exchange-load": "node test/exchange-load.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.30.0",
+    "zod": "^4.6.5"
+  }
+}
